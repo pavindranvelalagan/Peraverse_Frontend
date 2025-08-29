@@ -1,2 +1,2 @@
 # Pera-Verse-Frontend
-This is main reposatary for the project.
+This is main repository for the project.
