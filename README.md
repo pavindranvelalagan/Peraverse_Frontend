@@ -1,2 +1,2 @@
-# pera_verse-
+# Pera-Verse-Frontend
 This is main reposatary for the project.
