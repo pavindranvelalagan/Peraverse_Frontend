@@ -1,0 +1,145 @@
+.information-container {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.information-header {
+  margin-bottom: 2rem;
+}
+
+.information-subtitle {
+  color: #6b7280;
+  font-size: 1.1rem;
+}
+
+.information-nav-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.information-nav-button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 1rem;
+  text-align: left;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  background-color: #ffffff;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.information-nav-button.active {
+  background-color: #3b82f6;
+  color: #ffffff;
+  border-color: #3b82f6;
+}
+
+.information-nav-button:hover:not(.active) {
+  background-color: #f3f4f6;
+}
+
+.information-nav-badge {
+  margin-left: auto;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.information-nav-button.active .information-nav-badge {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+.information-content-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.information-section h3 {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.information-section p {
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.information-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.information-detail-item span {
+  color: #6b7280;
+}
+
+.information-facilities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.information-facility-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  background-color: #ffffff;
+  transition: box-shadow 0.2s;
+}
+
+.information-facility-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.information-facility-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.information-facility-header h4 {
+  font-weight: 600;
+  margin: 0;
+}
+
+.information-facility-description {
+  color: #6b7280;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .information-facilities-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .information-nav-button {
+    padding: 0.75rem;
+  }
+  
+  .information-container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .information-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .information-subtitle {
+    font-size: 1rem;
+  }
+}
