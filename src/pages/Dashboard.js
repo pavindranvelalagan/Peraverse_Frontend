@@ -104,6 +104,12 @@ const LocateIcon = () => (
 );
 
 // Search icon component (clickable)
+// Custom SVG Bell Icon for Notification
+const BellIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ verticalAlign: 'middle' }}>
+    <path d="M11 20c1.104 0 2-.896 2-2h-4c0 1.104.896 2 2 2zm6-6v-5c0-3.07-2.13-5.64-5-6.32V2a1 1 0 1 0-2 0v.68C5.13 3.36 3 5.92 3 9v5l-1 1v1h16v-1l-1-1z" stroke="#2563eb" strokeWidth="1.5" fill="#fff"/>
+  </svg>
+);
 const SearchIconBtn = ({ onClick }) => (
   <button
     className="map-search-icon-btn"
@@ -658,7 +664,7 @@ const Dashboard = () => {
                 style={{ width: 44, height: 44, padding: 0, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}
                 onClick={() => setShowNotificationPanel(v => !v)}
               >
-                <span role="img" aria-label="notification">🔔</span>
+                <BellIcon />
               </button>
               {showNotificationPanel && (
                 <div className="dashboard-notification-panel" style={{ position: 'absolute', top: '110%', right: 0, minWidth: 260, background: '#fff', borderRadius: 16, boxShadow: '0 8px 32px rgba(37,99,235,0.12)', padding: '18px 18px 12px 18px', zIndex: 9999 }}>

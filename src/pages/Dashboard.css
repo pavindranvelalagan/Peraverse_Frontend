@@ -1,3 +1,7 @@
+/* Notification icon color override to match theme */
+.dashboard-notification-icon {
+  color: #2563eb;
+}
 .dashboard-container {
   padding: 1rem;
   overflow-x: hidden;
