@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import './Dashboard.css';
-import mapUrl from '../assets/clickable_faculty_map.svg';
+const mapUrl = '/images/clickable_faculty_map.svg';
 
 const MAP_WIDTH = 462.6; // from SVG viewBox
 const MAP_HEIGHT = 549.2; // from SVG viewBox
