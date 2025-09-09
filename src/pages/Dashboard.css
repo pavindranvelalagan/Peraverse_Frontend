@@ -1,3 +1,7 @@
+/* Notification icon color override to match theme */
+.dashboard-notification-icon {
+  color: #2563eb;
+}
 .dashboard-container {
   padding: 1rem;
   overflow-x: hidden;
@@ -235,16 +239,31 @@
   position: absolute;
   left: 0;
   top: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: fit-content;
+  height: fit-content;
+  display: block;
 }
 
+.map-controls {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 15;
+  width: 44px;
+  min-width: 0;
+  align-items: center;
+}
+
+/* Removed duplicate .map-controls rule */
+
+/* ...existing code... */
+
 .map-image {
-  width: 100%;
-  height: 100%;
+  width: fit-content;
+  height: fit-content;
   object-fit: contain;
   user-select: none;
   -webkit-user-drag: none;
@@ -275,6 +294,9 @@
   flex-direction: column;
   gap: 8px;
   z-index: 15;
+  width: 44px;
+  min-width: 0;
+  align-items: center;
 }
 
 .map-gps-controls {
@@ -563,7 +585,7 @@
 .map-info {
   position: absolute;
   bottom: 20px;
-  right: 20px;
+  left: 20px;
   background: #ffffff;
   border: none;
   border-radius: 16px;
@@ -1147,9 +1169,7 @@
   top: 0;
   width: 100%;
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
 }
 
 .map-image {
@@ -1233,12 +1253,89 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px);}
+  from { opacity
   to { opacity: 1; transform: translateY(0);}
 }
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px);}
-  to { opacity: 1; transform: translateY(0);}
 }
 
-
+@media (max-width: 1024px) {
+  .map-main {
+    width: 100%;
+    min-width: 0;
+    flex: 1 1 100%;
+    padding: 0;
+  }
+  .map-card {
+    width: 100%;
+    min-width: 0;
+    padding: 8px;
+    border-radius: 12px;
+    box-sizing: border-box;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .map-viewport {
+    width: 100%;
+    min-width: 0;
+    height: 45vh;
+    border-radius: 10px;
+    box-sizing: border-box;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .map-content {
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    box-sizing: border-box;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .map-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    min-width: 0;
+    min-height: 0;
+    display: block;
+  }
+  .map-bookmark-sidebar-block {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    margin-left: 0 !important;
+    border-radius: 12px !important;
+    box-sizing: border-box;
+    padding: 12px !important;
+  }
+  .dashboard-search-center {
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 0;
+    margin-top: 0;
+    background: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    display: flex;
+    flex-direction: row;
+  }
+  .map-search {
+    width: 100%;
+    max-width: 400px;
+    margin: 0;
+    display: flex;
+    justify-content: flex-start;
+    flex: 1;
+  }
+  .dashboard-zone-filter-btn-wrap {
+    margin-left: 8px;
+    align-self: center;
+  }
+}

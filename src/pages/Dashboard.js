@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import './Dashboard.css';
-import mapUrl from '/images/clickable_faculty_map.svg';
+const mapUrl = '/images/clickable_faculty_map.svg';
 
 const MAP_WIDTH = 462.6; // from SVG viewBox
 const MAP_HEIGHT = 549.2; // from SVG viewBox
-const MIN_SCALE = 0.7;
+const MIN_SCALE = 0.9;
 const MAX_SCALE = 4;
 
 const categories = {
@@ -104,6 +104,12 @@ const LocateIcon = () => (
 );
 
 // Search icon component (clickable)
+// Custom SVG Bell Icon for Notification
+const BellIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ verticalAlign: 'middle' }}>
+    <path d="M11 20c1.104 0 2-.896 2-2h-4c0 1.104.896 2 2 2zm6-6v-5c0-3.07-2.13-5.64-5-6.32V2a1 1 0 1 0-2 0v.68C5.13 3.36 3 5.92 3 9v5l-1 1v1h16v-1l-1-1z" stroke="#2563eb" strokeWidth="1.5" fill="#fff"/>
+  </svg>
+);
 const SearchIconBtn = ({ onClick }) => (
   <button
     className="map-search-icon-btn"
@@ -336,13 +342,20 @@ const Dashboard = () => {
 
   // On initial mount, center map
   useEffect(() => {
-    centerMapInBox(1);
-    // eslint-disable-next-line
+    centerMapInBox(1); // Always center map on initial mount
   }, []);
 
   // Update resetView to use centerMapInBox
   const resetView = () => {
-    centerMapInBox(1);
+    const container = containerRef.current;
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    const mapW = MAP_WIDTH * 1;
+    const mapH = MAP_HEIGHT * 1;
+    const tx = (rect.width - mapW) / 2;
+    const ty = (rect.height - mapH) / 2;
+    setScale(1);
+    setTranslation({ x: tx, y: ty });
   };
 
   // When scale changes, clamp translation to keep map inside viewport and re-center if needed
@@ -455,6 +468,7 @@ const Dashboard = () => {
   // Notification state
   const [notification, setNotification] = useState(null);
   const [showNotificationPopup, setShowNotificationPopup] = useState(false);
+  const [showNotificationPanel, setShowNotificationPanel] = useState(false);
 
   // Helper: get next notification event (10 min before or at start)
   const getNextNotification = () => {
@@ -502,6 +516,38 @@ const Dashboard = () => {
     return () => clearInterval(interval);
     // eslint-disable-next-line
   }, [bookmarkedPoints]);
+
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const handleFullscreen = () => {
+    const el = containerRef.current;
+    if (!el) return;
+    if (!isFullscreen) {
+      if (el.requestFullscreen) el.requestFullscreen();
+      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+      else if (el.mozRequestFullScreen) el.mozRequestFullScreen();
+      else if (el.msRequestFullscreen) el.msRequestFullscreen();
+    } else {
+      if (document.exitFullscreen) document.exitFullscreen();
+      else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+      else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+      else if (document.msExitFullscreen) document.msExitFullscreen();
+    }
+  };
+  useEffect(() => {
+    const onFsChange = () => {
+      setIsFullscreen(!!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement));
+    };
+    document.addEventListener('fullscreenchange', onFsChange);
+    document.addEventListener('webkitfullscreenchange', onFsChange);
+    document.addEventListener('mozfullscreenchange', onFsChange);
+    document.addEventListener('MSFullscreenChange', onFsChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', onFsChange);
+      document.removeEventListener('webkitfullscreenchange', onFsChange);
+      document.removeEventListener('mozfullscreenchange', onFsChange);
+      document.removeEventListener('MSFullscreenChange', onFsChange);
+    };
+  }, []);
 
   return (
     <div className="dashboard-container with-bottom-padding">
@@ -568,12 +614,7 @@ const Dashboard = () => {
                 </svg>
               </button>
               {showZoneFilter && (
-                <div
-                  className="dashboard-zone-filter-popup"
-                  tabIndex={-1}
-                  onClick={e => e.stopPropagation()}
-                  style={{}}
-                >
+                <div className="dashboard-zone-filter-popup" style={{ position: 'absolute', top: '110%', left: '0px', minWidth: 260, background: '#fff', borderRadius: 16, boxShadow: '0 8px 32px rgba(37,99,235,0.12)', padding: '18px 18px 12px 18px', zIndex: 9999 }}>
                   <div style={{ fontWeight: 600, color: '#2563eb', marginBottom: 8 }}>Zone/Subzone Filters</div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                     <select
@@ -609,17 +650,47 @@ const Dashboard = () => {
                   className="dashboard-zone-filter-close"
                   type="button"
                   onClick={() => setShowZoneFilter(false)}
-                  style={{
-                    marginTop: 12,
-                    background: '#2563eb',
-                    color: '#fff',
-                    borderRadius: '8px',
-                    border: 'none',
-                    padding: '8px 18px',
-                    fontWeight: 600,
-                    cursor: 'pointer'
-                  }}
+                  style={{ marginTop: 12, background: '#2563eb', color: '#fff', borderRadius: '8px', border: 'none', padding: '8px 18px', fontWeight: 600, cursor: 'pointer' }}
                 >Done</button>
+                </div>
+              )}
+            </div>
+            {/* Notification button next to filter button */}
+            <div className="dashboard-notification-btn-wrap" style={{ position: 'relative', marginLeft: 8 }}>
+              <button
+                className="dashboard-zone-filter-btn"
+                type="button"
+                aria-label="Notifications"
+                style={{ width: 44, height: 44, padding: 0, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}
+                onClick={() => setShowNotificationPanel(v => !v)}
+              >
+                <BellIcon />
+              </button>
+              {showNotificationPanel && (
+                <div className="dashboard-notification-panel" style={{ position: 'absolute', top: '110%', right: 0, minWidth: 260, background: '#fff', borderRadius: 16, boxShadow: '0 8px 32px rgba(37,99,235,0.12)', padding: '18px 18px 12px 18px', zIndex: 9999 }}>
+                  <div style={{ fontWeight: 600, color: '#2563eb', marginBottom: 8 }}>Notifications</div>
+                  {notification ? (
+                    <div className="dashboard-bookmark-notification">
+                      <span role="img" aria-label="notification" style={{ marginRight: 6 }}>🔔</span>
+                      <span>
+                        {(() => {
+                          const now = Date.now();
+                          const start = typeof notification.startTime === 'number' ? notification.startTime : new Date(notification.startTime).getTime();
+                          if (now < start) {
+                            return <>Upcoming: <strong>{notification.name}</strong> at {new Date(start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</>;
+                          } else {
+                            return <>Event <strong>{notification.name}</strong> is starting now!</>;
+                          }
+                        })()}
+                      </span>
+                    </div>
+                  ) : (
+                    <div style={{ color: '#6b7280', fontSize: '0.95rem' }}>No notifications.</div>
+                  )}
+                  <button
+                    style={{ marginTop: 12, background: '#2563eb', color: '#fff', borderRadius: '8px', border: 'none', padding: '8px 18px', fontWeight: 600, cursor: 'pointer' }}
+                    onClick={() => setShowNotificationPanel(false)}
+                  >Close</button>
                 </div>
               )}
             </div>
@@ -717,9 +788,15 @@ const Dashboard = () => {
                 <div className="map-controls">
                   <button className="map-ctrl" onClick={zoomIn} aria-label="Zoom in">+</button>
                   <button className="map-ctrl" onClick={zoomOut} aria-label="Zoom out">−</button>
-                  <button className="map-ctrl" onClick={resetView} aria-label="Reset view">⤾</button>
                   <button className={`map-ctrl ${isLocating ? 'loading' : ''}`} onClick={locateMe} aria-label="Locate me">
                     <LocateIcon />
+                  </button>
+                  <button className="map-ctrl" onClick={handleFullscreen} aria-label="Fullscreen" title="Fullscreen">
+                    {isFullscreen ? (
+                      <span role="img" aria-label="Exit Fullscreen">🗗</span>
+                    ) : (
+                      <span role="img" aria-label="Fullscreen">🗖</span>
+                    )}
                   </button>
                 </div>
                 {/* Map Info */}
@@ -855,35 +932,6 @@ const Dashboard = () => {
                 ))
               )}
             </div>
-            {/* Notifications block (completely separate, below bookmarks) */}
-            <div className="dashboard-bookmark-notification-block" style={{
-              marginTop: '1rem',
-              background: '#f8f9fa',
-              borderRadius: '12px',
-              padding: '12px',
-              boxShadow: '0 2px 8px rgba(37,99,235,0.06)'
-            }}>
-              <div style={{ fontWeight: 600, color: '#2563eb', marginBottom: 8 }}>Notifications</div>
-              {notification && (
-                <div className="dashboard-bookmark-notification">
-                  <span role="img" aria-label="notification" style={{ marginRight: 6 }}>🔔</span>
-                  <span>
-                    {(() => {
-                      const now = Date.now();
-                      const start = typeof notification.startTime === 'number' ? notification.startTime : new Date(notification.startTime).getTime();
-                      if (now < start) {
-                        return <>Upcoming: <strong>{notification.name}</strong> at {new Date(start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</>;
-                      } else {
-                        return <>Event <strong>{notification.name}</strong> is starting now!</>;
-                      }
-                    })()}
-                  </span>
-                </div>
-              )}
-              {!notification && (
-                <div style={{ color: '#6b7280', fontSize: '0.95rem' }}>No notifications.</div>
-              )}
-            </div>
           </div>
         </div>
       </div>
@@ -924,4 +972,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
